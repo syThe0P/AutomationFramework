@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class DropdownTest extends BaseTest{
 
-    @Test(description = "google load")
+    @Test(description = "verify dropdown functionality")
     public void verifyDropdownFunctionality(){
         DropdownPage dropdownPage = new DropdownPage(getDriver());
         dropdownPage.loadDropdownPage();

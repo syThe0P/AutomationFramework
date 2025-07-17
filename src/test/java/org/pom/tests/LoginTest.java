@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class LoginTest extends BaseTest{
 
-    @Test(description = "google load")
+    @Test(description = "verify valid login credentials")
     public void verifyValidLoginCredentials(){
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.loadLoginPage();
@@ -17,7 +17,7 @@ public class LoginTest extends BaseTest{
         loginPage.verifyLoginSuccessful();
     }
 
-    @Test(description = "google load")
+    @Test(description = "verify invalid login credentials")
     public void verifyInvalidLoginCredentials(){
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.loadLoginPage();
