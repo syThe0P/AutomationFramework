@@ -1,7 +1,5 @@
 package org.pom.utils;
 
-import org.pom.enums.LogLevelEnum;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,7 +18,6 @@ public class StringHelper {
         return stringHelper;
     }
 
-    // This method trims the start and end of the string and removes any extra spaces
     public String trimEnd(String stringText, String suffix) {
         if (stringText.trim().endsWith(suffix))
             return stringText.trim().substring(0, stringText.trim().length() - suffix.length());
@@ -74,7 +71,8 @@ public class StringHelper {
             linkedHashMapTestParameters.put("Actual Text", actualText);
             linkedHashMapTestParameters.put("Regex", regex);
             linkedHashMapTestParameters.put("Index", String.valueOf(index));
-            ReportUtils.getInstance().reportStepWithoutScreenshot("Unable to get data based on regex due to exception - <b><i>" + e.getClass().getSimpleName() + "</i></b>.", LogLevelEnum.FAIL, linkedHashMapTestParameters);
+            System.out.println("Unable to get data based on regex due to exception - " + e.getClass().getSimpleName());
+            System.out.println("Details: " + linkedHashMapTestParameters);
         }
         return result;
     }
@@ -86,12 +84,12 @@ public class StringHelper {
     public boolean containsAllSubstrings(String response, List<String> substrings) {
         boolean flag = true;
         if (response.isEmpty() || substrings.isEmpty()) {
-            ReportUtils.getInstance().reportStepWithoutScreenshot("Either response or substrings list is empty", LogLevelEnum.INFO);
+            System.out.println("Either response or substrings list is empty");
             return false;
         }
         for (String substring : substrings) {
             if (!response.contains(substring)) {
-                ReportUtils.getInstance().reportStepWithoutScreenshot(substring + " not found in given Response", LogLevelEnum.INFO);
+                System.out.println(substring + " not found in given Response");
                 flag = false;
             }
         }

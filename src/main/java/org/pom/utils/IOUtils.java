@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.json.simple.JSONObject;
-import org.pom.enums.LogLevelEnum;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -42,7 +41,7 @@ public class IOUtils {
         try {
             FileUtils.cleanDirectory(new File(directoryPath));
         } catch (Exception e) {
-            ReportUtils.getInstance().reportStepWithoutScreenshot("Unable to delete directory -> " + directoryPath + " due to exception occurred:- " + e, LogLevelEnum.INFO);
+            System.out.println("Unable to delete directory -> " + directoryPath + " due to exception occurred: " + e);
         }
     }
 
@@ -76,13 +75,13 @@ public class IOUtils {
             PDFTextStripper pdfStripper = new PDFTextStripper();
             text = pdfStripper.getText(document);
         } catch (Exception e) {
-            ReportUtils.getInstance().reportStepWithoutScreenshot("Exception occurred:-" + e, LogLevelEnum.INFO);
+            System.out.println("Exception occurred while reading PDF: " + e);
         } finally {
             if (document != null) {
                 try {
                     document.close();
                 } catch (Exception e) {
-                    ReportUtils.getInstance().reportStepWithoutScreenshot("Exception occurred:-" + e, LogLevelEnum.INFO);
+                    System.out.println("Exception occurred while closing PDF document: " + e);
                 }
             }
         }
@@ -101,19 +100,19 @@ public class IOUtils {
         }
         line.append("\n");
         File csvFile = new File(fileDirectory);
-        try (FileWriter fileWriter = new FileWriter(csvFile, true);) {
+        try (FileWriter fileWriter = new FileWriter(csvFile, true)) {
             fileWriter.write(line.toString());
         } catch (Exception e) {
-            logger.log(Level.WARNING, new StringBuilder().append("Exception occurred:-").append(e).toString());
+            logger.log(Level.WARNING, "Exception occurred:-" + e);
         }
     }
 
     public void writeJsonDataToJsonFile(String fileDirectory, JSONObject jsonObject) {
         File jsonFile = new File(fileDirectory);
-        try (FileWriter file = new FileWriter(jsonFile);) {
+        try (FileWriter file = new FileWriter(jsonFile)) {
             file.write(jsonObject.toJSONString());
         } catch (IOException e) {
-            logger.log(Level.WARNING, new StringBuilder().append("Exception occurred:-").append(e).toString());
+            logger.log(Level.WARNING, "Exception occurred:-" + e);
         }
     }
 
@@ -123,7 +122,7 @@ public class IOUtils {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                logger.log(Level.INFO, String.format("Error occurred while creating report directory:%s", e));
+                logger.log(Level.INFO, String.format("Error occurred while creating report directory: %s", e));
             }
         }
     }
@@ -140,7 +139,7 @@ public class IOUtils {
                 logger.log(Level.WARNING, message);
             }
         } catch (Exception e) {
-            String message = "Exception occurred:- " + e + " Please check the file '" + jsonFilePath + "' exists with valid details.";
+            String message = "Exception occurred: " + e + " Please check the file '" + jsonFilePath + "' exists with valid details.";
             logger.log(Level.WARNING, message);
         }
         return linkedHashMap;
@@ -165,7 +164,7 @@ public class IOUtils {
         try {
             FileUtils.delete(new File(filePath));
         } catch (Exception e) {
-            ReportUtils.getInstance().reportStepWithoutScreenshot("Unable to delete file -> " + filePath + " due to Exception occurred:-" + e, LogLevelEnum.INFO);
+            System.out.println("Unable to delete file -> " + filePath + " due to exception occurred: " + e);
         }
     }
 

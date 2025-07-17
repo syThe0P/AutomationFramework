@@ -2,7 +2,6 @@ package org.pom.utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.pom.enums.LogLevelEnum;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -32,11 +31,9 @@ public class DateTimeUtils {
     }
 
     public String getCurrentTime() {
-        String currentTime = "";
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         Calendar time = Calendar.getInstance();
-        currentTime = dateFormat.format(time.getTime()).replace(":", "-");
-        return currentTime;
+        return dateFormat.format(time.getTime()).replace(":", "-");
     }
 
     public String getCurrentDate(String format) {
@@ -73,71 +70,55 @@ public class DateTimeUtils {
         long diffSeconds = TimeUnit.MILLISECONDS.toSeconds(difference) % 60;
         long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(difference) % 60;
         long diffHours = TimeUnit.MILLISECONDS.toHours(difference) % 24;
-        String hour = "";
-        String minutes = "";
-        String second = "";
-        String milliSeconds = "";
-        if (diffHours < 10) hour = "0" + diffHours;
-        else hour = String.valueOf(diffHours);
-        if (diffMinutes < 10) minutes = "0" + diffMinutes;
-        else minutes = String.valueOf(diffMinutes);
-        if (diffSeconds < 10) second = "0" + diffSeconds;
-        else second = String.valueOf(diffSeconds);
-        if (diffMilliSeconds < 10) milliSeconds = "00" + diffMilliSeconds;
-        else if (diffMilliSeconds < 100) milliSeconds = "0" + diffMilliSeconds;
-        else milliSeconds = String.valueOf(diffMilliSeconds);
+
+        String hour = (diffHours < 10) ? "0" + diffHours : String.valueOf(diffHours);
+        String minutes = (diffMinutes < 10) ? "0" + diffMinutes : String.valueOf(diffMinutes);
+        String second = (diffSeconds < 10) ? "0" + diffSeconds : String.valueOf(diffSeconds);
+        String milliSeconds = (diffMilliSeconds < 10) ? "00" + diffMilliSeconds
+                : (diffMilliSeconds < 100) ? "0" + diffMilliSeconds : String.valueOf(diffMilliSeconds);
+
         return hour + ":" + minutes + ":" + second + ":" + milliSeconds;
     }
 
     public String getNextDate() {
-        LocalDate date = LocalDate.now();
-        date = date.plusDays(1);
-        return date.toString();
+        return LocalDate.now().plusDays(1).toString();
     }
 
     public int getCurrentDay() {
-        LocalDate date = LocalDate.now();
-        return date.getDayOfMonth();
+        return LocalDate.now().getDayOfMonth();
     }
 
     public String getCurrentTimeInHoursAndMinutes(String timeZone) {
-        String hours = getHoursFromCurrentTime(timeZone);
-        String minutes = getMinutesFromCurrentTime(timeZone);
-        return hours + ":" + minutes;
+        return getHoursFromCurrentTime(timeZone) + ":" + getMinutesFromCurrentTime(timeZone);
     }
 
     public int getCurrentMonthValue() {
-        LocalDate date = LocalDate.now();
-        return date.getMonthValue();
+        return LocalDate.now().getMonthValue();
     }
 
     public String getHoursFromCurrentTime(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
+        DateTime dateTime = new DateTime(DateTimeZone.forID(timeZone));
         String hours = String.valueOf(dateTime.getHourOfDay());
-        if (hours.length() == 1) hours = "0" + hours;
-        return hours;
+        return (hours.length() == 1) ? "0" + hours : hours;
     }
 
     public String getMinutesFromCurrentTime(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
+        DateTime dateTime = new DateTime(DateTimeZone.forID(timeZone));
         String minutes = String.valueOf(dateTime.getMinuteOfHour());
-        if (minutes.length() == 1) minutes = "0" + minutes;
-        return minutes;
+        return (minutes.length() == 1) ? "0" + minutes : minutes;
     }
 
     private String getDate(String format, String timeZone, String timePeriod) {
         if (format.equals("")) format = "dd-mm-yyyy";
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
+        DateTime dateTime = new DateTime(DateTimeZone.forID(timeZone));
+
         if (timePeriod.equalsIgnoreCase(past)) dateTime = dateTime.minusDays(1);
         if (timePeriod.equalsIgnoreCase(future)) dateTime = dateTime.plusDays(1);
+
         String year = String.valueOf(dateTime.getYear());
-        String month = String.valueOf(dateTime.getMonthOfYear());
-        String day = String.valueOf(dateTime.getDayOfMonth());
-        if (day.length() == 1) day = "0" + day;
-        if (month.length() == 1) month = "0" + month;
+        String month = String.format("%02d", dateTime.getMonthOfYear());
+        String day = String.format("%02d", dateTime.getDayOfMonth());
+
         format = format.toUpperCase();
         return format.replace("YYYY", year).replace("MM", month).replace("DD", day);
     }
@@ -155,27 +136,19 @@ public class DateTimeUtils {
     }
 
     public String getDayOfMonthCurrentDate(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
-        return dateTime.dayOfMonth().getAsText();
+        return new DateTime(DateTimeZone.forID(timeZone)).dayOfMonth().getAsText();
     }
 
     public String getMonthNameAsShortTextFromCurrentDate(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
-        return dateTime.monthOfYear().getAsShortText();
+        return new DateTime(DateTimeZone.forID(timeZone)).monthOfYear().getAsShortText();
     }
 
     public String getCurrentMonthName(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
-        return dateTime.monthOfYear().getAsText();
+        return new DateTime(DateTimeZone.forID(timeZone)).monthOfYear().getAsText();
     }
 
     public String getCurrentYear(String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime dateTime = new DateTime(zone);
-        return dateTime.year().getAsText();
+        return new DateTime(DateTimeZone.forID(timeZone)).year().getAsText();
     }
 
     public String getFutureOrPastDate(int numberOfDays, int numberOfMonths, int numberofYears, String format) {
@@ -183,59 +156,57 @@ public class DateTimeUtils {
         calendar.add(Calendar.DATE, numberOfDays);
         calendar.add(Calendar.MONTH, numberOfMonths);
         calendar.add(Calendar.YEAR, numberofYears);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-        return simpleDateFormat.format(calendar.getTime());
+        return new SimpleDateFormat(format).format(calendar.getTime());
     }
 
     public String getTimeStampInSpecificTimeZone(String timeStampFormat, String timeStamp, String timeZone) {
-        String timeStampWithRequiredTimezone = "";
+        String result = "";
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(timeStampFormat);
-            simpleDateFormat.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
-            Date date = simpleDateFormat.parse(timeStamp);
-            simpleDateFormat.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-            timeStampWithRequiredTimezone = simpleDateFormat.format(date);
+            SimpleDateFormat sdf = new SimpleDateFormat(timeStampFormat);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date date = sdf.parse(timeStamp);
+            sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+            result = sdf.format(date);
         } catch (Exception e) {
             logger.log(Level.INFO, String.format("Error {%s} occurred due to unacceptable date format.", e));
         }
-        return timeStampWithRequiredTimezone;
+        return result;
     }
 
     public String convertTimeStampIntoSpecificFormat(String givenFormat, String timeStamp, String requiredFormat) {
-        Date date = null;
-        String convertTimeStamp = "";
+        String result = "";
         try {
-            date = new SimpleDateFormat(givenFormat).parse(timeStamp);
-            convertTimeStamp = new SimpleDateFormat(requiredFormat).format(date);
+            Date date = new SimpleDateFormat(givenFormat).parse(timeStamp);
+            result = new SimpleDateFormat(requiredFormat).format(date);
         } catch (Exception e) {
             logger.log(Level.INFO, "Exception occurred in convertTimeStampIntoSpecificFormat method due to {%s} : ", e);
         }
-        return convertTimeStamp;
+        return result;
     }
 
     public String getCurrentWeekDayName() {
-        LocalDate date = LocalDate.now();
-        return date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        return LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
     }
 
     public String[] getNextTimeMultipleOfMinutes(String timeZone, int minuteMultiple, boolean includeCurrent) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime now = new DateTime(zone);
+        DateTime now = new DateTime(DateTimeZone.forID(timeZone));
         int minutes = now.getMinuteOfHour();
-        int nextMultiple = (minutes % minuteMultiple == 0 && includeCurrent) ? minutes : ((minutes / minuteMultiple) + 1) * minuteMultiple;
+        int nextMultiple = (minutes % minuteMultiple == 0 && includeCurrent)
+                ? minutes
+                : ((minutes / minuteMultiple) + 1) * minuteMultiple;
+
         DateTime nextTime = now.withMinuteOfHour(nextMultiple % 60).withSecondOfMinute(0).withMillisOfSecond(0);
-        if (nextMultiple >= 60) {
-            nextTime = nextTime.plusHours(1);
-        }
+        if (nextMultiple >= 60) nextTime = nextTime.plusHours(1);
+
         String hour = nextTime.getHourOfDay() < 10 ? "0" + nextTime.getHourOfDay() : String.valueOf(nextTime.getHourOfDay());
         String min = nextTime.getMinuteOfHour() < 10 ? "0" + nextTime.getMinuteOfHour() : String.valueOf(nextTime.getMinuteOfHour());
-        ReportUtils.getInstance().reportStepWithoutScreenshot("Next Multiple of 15min time is: " + hour + ":" + min, LogLevelEnum.INFO);
+
+        System.out.println("Next Multiple of " + minuteMultiple + "min time is: " + hour + ":" + min);
         return new String[]{hour, min};
     }
 
     public long convertToEpochTime(int hours, int minutes, String timeZone) {
-        DateTimeZone zone = DateTimeZone.forID(timeZone);
-        DateTime now = new DateTime(zone);
+        DateTime now = new DateTime(DateTimeZone.forID(timeZone));
         DateTime dateTime = now.withHourOfDay(hours).withMinuteOfHour(minutes).withSecondOfMinute(0).withMillisOfSecond(0);
         return dateTime.toDateTime(DateTimeZone.UTC).getMillis() / 1000;
     }
@@ -265,5 +236,4 @@ public class DateTimeUtils {
         calendar.add(Calendar.HOUR, hoursToAdd);
         return dateFormat.format(calendar.getTime());
     }
-
 }

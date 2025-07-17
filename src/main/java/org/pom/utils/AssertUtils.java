@@ -1,13 +1,12 @@
 package org.pom.utils;
 
 import org.pom.base.*;
-import org.pom.enums.ConfigEnum;
-import org.pom.enums.LogLevelEnum;
 import org.testng.Assert;
 
 public class AssertUtils extends BaseTest {
 
-    private static AssertUtils assertUtils;
+    private static final ThreadLocal<AssertUtils> assertUtils = ThreadLocal.withInitial(AssertUtils::new);
+
     String textAssertionPassed = "Assertion passed - ";
     String textAssertionFailed = "Assertion failed - ";
     String startingTag = "<b><i>";
@@ -17,18 +16,17 @@ public class AssertUtils extends BaseTest {
     String security = "Security";
 
     public static AssertUtils getInstance() {
-        if (assertUtils == null) assertUtils = new AssertUtils();
-        return assertUtils;
+        return assertUtils.get();
     }
 
     private void assertEquals(Object actual, Object expected, boolean isSoftAssert) {
-            try {
-                Assert.assertEquals(actual, expected);
-                ReportUtils.getInstance().reportStepWithoutScreenshot(textAssertionPassed + startingTag + "Actual Text: " + closingTag + actual + " and " + startingTag + " Expected Text: " + closingTag + expected + ".", LogLevelEnum.INFO);
-            } catch (AssertionError assertionError) {
-                String reportStep = textAssertionFailed + startingTag + "Actual Text: " + closingTag + actual + " and " + startingTag + " Expected Text: " + closingTag + expected + ".";
-                reportAssertionStep(isSoftAssert, reportStep, assertionError);
-            }
+        try {
+            Assert.assertEquals(actual, expected);
+            System.out.println(textAssertionPassed + startingTag + "Actual Text: " + closingTag + actual + " and " + startingTag + " Expected Text: " + closingTag + expected + ".");
+        } catch (AssertionError assertionError) {
+            String reportStep = textAssertionFailed + startingTag + "Actual Text: " + closingTag + actual + " and " + startingTag + " Expected Text: " + closingTag + expected + ".";
+            reportAssertionStep(isSoftAssert, reportStep, assertionError);
+        }
     }
 
     public void assertEquals(Object actual, Object expected) {
@@ -40,17 +38,18 @@ public class AssertUtils extends BaseTest {
     }
 
     private void assertTrueOrFalse(boolean condition, boolean isAssertTrue, boolean isSoftAssert, String message) {
-            try {
-                if (isAssertTrue) Assert.assertTrue(condition);
-                else Assert.assertFalse(condition);
-                if (!message.equalsIgnoreCase(""))
-                    ReportUtils.getInstance().reportStepWithoutScreenshot(textAssertionPassed + startingTag + message + closingTag + ".", LogLevelEnum.INFO);
-                else
-                    ReportUtils.getInstance().reportStepWithoutScreenshot(textAssertionPassed + startingTag + textConditionIsReturning + isAssertTrue + closingTag + ".", LogLevelEnum.INFO);
-            } catch (AssertionError assertionError) {
-                String reportStep = textAssertionFailed + startingTag + message + " " + textConditionIsReturning + !isAssertTrue + closingTag + ".";
-                reportAssertionStep(isSoftAssert, reportStep, assertionError);
+        try {
+            if (isAssertTrue) Assert.assertTrue(condition);
+            else Assert.assertFalse(condition);
+            if (!message.equalsIgnoreCase("")) {
+                System.out.println(textAssertionPassed + startingTag + message + closingTag + ".");
+            } else {
+                System.out.println(textAssertionPassed + startingTag + textConditionIsReturning + isAssertTrue + closingTag + ".");
             }
+        } catch (AssertionError assertionError) {
+            String reportStep = textAssertionFailed + startingTag + message + " " + textConditionIsReturning + !isAssertTrue + closingTag + ".";
+            reportAssertionStep(isSoftAssert, reportStep, assertionError);
+        }
     }
 
     public void assertTrue(boolean condition) {
@@ -87,24 +86,24 @@ public class AssertUtils extends BaseTest {
 
     private void reportAssertionStep(boolean isSoftAssert, String reportStep, AssertionError assertionError) {
         if (isSoftAssert) {
-            ReportUtils.getInstance().reportStepWithoutScreenshot(reportStep, LogLevelEnum.WARNING);
+            System.out.println(reportStep + " [SOFT ASSERT WARNING]");
             setIsFail(Boolean.TRUE);
             addException(assertionError);
         } else {
-            ReportUtils.getInstance().reportStepWithoutScreenshot(reportStep, LogLevelEnum.FAIL);
+            System.out.println(reportStep + " [HARD ASSERT FAIL]");
             throw assertionError;
         }
     }
 
     public void assertTrueOrFalseWithDescription(boolean assertCondition, String assertConditionDescription, boolean isAssertTrue) {
-            try {
-                if (isAssertTrue) Assert.assertTrue(assertCondition);
-                else Assert.assertFalse(assertCondition);
-                ReportUtils.getInstance().reportStepWithoutScreenshot(textAssertionPassed + assertConditionDescription + formattingTag + textConditionIsReturning + isAssertTrue + closingTag + ".", LogLevelEnum.INFO);
-            } catch (AssertionError assertionError) {
-                String reportStep = textAssertionFailed + assertConditionDescription + formattingTag + textConditionIsReturning + !isAssertTrue + closingTag + ".";
-                ReportUtils.getInstance().reportStepWithoutScreenshot(reportStep, LogLevelEnum.FAIL);
-                throw assertionError;
-            }
+        try {
+            if (isAssertTrue) Assert.assertTrue(assertCondition);
+            else Assert.assertFalse(assertCondition);
+            System.out.println(textAssertionPassed + assertConditionDescription + formattingTag + textConditionIsReturning + isAssertTrue + closingTag + ".");
+        } catch (AssertionError assertionError) {
+            String reportStep = textAssertionFailed + assertConditionDescription + formattingTag + textConditionIsReturning + !isAssertTrue + closingTag + ".";
+            System.out.println(reportStep + " [HARD ASSERT FAIL]");
+            throw assertionError;
+        }
     }
 }
