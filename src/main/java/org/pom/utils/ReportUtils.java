@@ -2,7 +2,6 @@ package org.pom.utils;
 
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
-import io.qameta.allure.Attachment;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -107,11 +106,6 @@ public class ReportUtils extends BaseTest {
     private String getCollapsibleMarkUp(String json) {
         counter++;
         return "<div class='container'><details><summary>Step Logs</summary><div class='json-tree' id='code-block-json-" + counter + "'></div><script>function jsonTreeCreate" + counter + "(){document.getElementById('code-block-json-" + counter + "').innerHTML = JSONTree.create(" + json + ");}jsonTreeCreate" + counter + "();</script></details></div>";
-    }
-
-    @Attachment(value = "Page screenshot", type = "image/png")
-    protected static synchronized byte[] saveScreenshotPNG(WebDriver driver) {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 
     public synchronized String getBase64Image(WebDriver webDriver) {
