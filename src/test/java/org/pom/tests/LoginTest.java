@@ -16,7 +16,6 @@ public class LoginTest extends BaseTest{
         BugReporter.reportIfTestFailed(result);
     }
 
-    @Test(description = "google load")
 
     @Test(description = "verify valid login credentials")
 
@@ -31,7 +30,6 @@ public class LoginTest extends BaseTest{
     }
 
 
-
     @Test(description = "verify invalid login credentials")
     public void verifyInvalidLoginCredentials(){
         LoginPage loginPage = new LoginPage(getDriver());
@@ -41,6 +39,18 @@ public class LoginTest extends BaseTest{
         loginPage.enterTextInInputBox("password", "invalidPassword");
         loginPage.clickLoginButton();
         loginPage.isErrorMessageDisplayed("Your username is invalid!");
+    }
+
+    @Test(description = "google load", groups = "jira")
+    public void verifyBugCreationAndAssertion() {
+        LoginPage loginPage = new LoginPage(getDriver());
+        loginPage.loadLoginPage();
+        loginPage.isHeaderVisible();
+        loginPage.enterTextInInputBox("username", "invalidUser");
+        loginPage.enterTextInInputBox("password", "invalidPassword");
+        loginPage.clickLoginButton();
+        loginPage.isErrorMessageDisplayed("Your username is invalid!");
+        AssertUtils.getInstance().assertFalse(true, "Forcing failure to test Jira bug creation");
     }
 
 }
