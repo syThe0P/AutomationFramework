@@ -1,5 +1,8 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="AutomationFrameworkSuite">
+    <listeners>
+        <listener class-name="org.pom.listeners.ExtentReportListeners"/>
+    </listeners>
     <test name="FirstTestExecution">
         <classes>
             <class name="org.pom.tests.LoginTest"/>

@@ -12,36 +12,52 @@ import org.pom.base.BaseTest;
 import org.pom.enums.LogLevelEnum;
 import org.pom.listeners.ExtentReportListeners;
 import java.util.LinkedHashMap;
+import java.util.Properties;
 import java.util.logging.Level;
-
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class ReportUtils extends BaseTest {
 
     private static int counter = 0;
     public static final int MAX_TRY = 0;
+    private static final boolean ALWAYS_TAKE_SCREENSHOT;
+
+    static {
+        boolean alwaysScreenshot = false;
+        try (FileInputStream fis = new FileInputStream("src/test/resources/config.properties")) {
+            Properties props = new Properties();
+            props.load(fis);
+            alwaysScreenshot = Boolean.parseBoolean(props.getProperty("report.screenshot.always", "false"));
+        } catch (IOException e) {
+            // fallback to false if file not found
+        }
+        ALWAYS_TAKE_SCREENSHOT = alwaysScreenshot;
+    }
 
     public static synchronized ReportUtils getInstance() {
         return new ReportUtils();
     }
 
     public synchronized void reportStep(WebDriver driver, String stepDescription, LogLevelEnum logLevelEnum, boolean isTakeScreenshot) {
+        boolean takeScreenshot = isTakeScreenshot || ALWAYS_TAKE_SCREENSHOT;
         switch (logLevelEnum) {
-            case WARNING -> reportStepWarning(driver, stepDescription, isTakeScreenshot);
-            case SKIP -> reportStepSkip(driver, stepDescription, isTakeScreenshot);
+            case WARNING -> reportStepWarning(driver, stepDescription, takeScreenshot);
+            case SKIP -> reportStepSkip(driver, stepDescription, takeScreenshot);
             case FAIL -> {
                 if (getCount() < MAX_TRY) {
                     setCount(getCount() + 1);
-                    reportStepWarning(driver, stepDescription, isTakeScreenshot);
-                } else reportStepFail(driver, stepDescription, isTakeScreenshot);
+                    reportStepWarning(driver, stepDescription, takeScreenshot);
+                } else reportStepFail(driver, stepDescription, takeScreenshot);
             }
-            case PASS -> reportStepPass(driver, stepDescription, isTakeScreenshot);
-            case INFO -> reportStepInfo(driver, stepDescription, isTakeScreenshot);
+            case PASS -> reportStepPass(driver, stepDescription, takeScreenshot);
+            case INFO -> reportStepInfo(driver, stepDescription, takeScreenshot);
         }
         logger.log(Level.INFO, stepDescription);
     }
 
     public void reportStep(WebDriver driver, String stepDescription, LogLevelEnum logLevelEnum) {
-        reportStep(driver, stepDescription, logLevelEnum,true);
+        reportStep(driver, stepDescription, logLevelEnum, true);
     }
 
     private void reportStepWithoutScreenshot(WebDriver driver, String stepDescription, LogLevelEnum logLevelEnum, LinkedHashMap<String, String> linkedHashMapTestParameters) {

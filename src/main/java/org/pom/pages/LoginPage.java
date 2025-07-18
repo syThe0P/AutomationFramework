@@ -9,6 +9,7 @@ import org.pom.base.BasePage;
 import org.pom.base.BaseTest;
 import org.pom.enums.LocatorEnum;
 import org.pom.utils.ConfigLoader;
+import org.pom.utils.VisualTestUtils;
 import org.pom.utils.seleniumutils.PageCommonUtils;
 import org.pom.utils.seleniumutils.ValidationCommonUtils;
 import org.pom.utils.seleniumutils.WaitUtilities;
@@ -25,6 +26,7 @@ public class LoginPage extends BasePage {
 
     public LoginPage loadLoginPage(){
         load(ConfigLoader.get("BASE_URL") + "/login");
+        VisualTestUtils.compareWithBaseline(driver, "LoginPage");
         return this;
     }
 
