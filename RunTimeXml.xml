@@ -5,7 +5,7 @@
     </listeners>
     <test name="FirstTestExecution">
         <classes>
-            <class name="org.pom.tests.DropdownTest"/>
+            <class name="org.pom.tests.LoginTest"/>
         </classes>
     </test>
 </suite>

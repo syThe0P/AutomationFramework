@@ -5,7 +5,6 @@ import org.pom.enums.BrowserEnum;
 import org.pom.enums.ConfigEnum;
 import org.pom.factory.abstractfactory.DriverManagerAbstract;
 import org.pom.factory.abstractfactory.DriverManagerFactoryAbstract;
-import org.pom.listeners.ExtentReportListeners;
 import org.pom.utils.seleniumutils.WaitUtilities;
 import org.testng.annotations.*;
 import org.zaproxy.clientapi.core.ApiResponse;
