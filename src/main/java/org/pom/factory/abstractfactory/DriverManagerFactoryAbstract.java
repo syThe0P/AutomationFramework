@@ -7,7 +7,6 @@ public class DriverManagerFactoryAbstract {
     }
 
     public static DriverManagerAbstract getManager(BrowserEnum browserEnum) {
-        System.out.println("Entered start get manager method");
         switch (browserEnum) {
             case CHROME -> {
                 return new ChromeDriverManagerAbstract();
