@@ -2,7 +2,11 @@ package org.pom.listeners;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+import org.openqa.selenium.WebDriver;
+import org.pom.utils.ScreenshotUtils;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -82,4 +86,50 @@ public class ExtentReportListeners implements ITestListener {
         }
     }
 
+    public static void initReport(String fileName) {
+        ExtentSparkReporter sparkReporter = new ExtentSparkReporter(fileName);
+        sparkReporter.config().setTheme(Theme.STANDARD);
+        sparkReporter.config().setDocumentTitle("Automation Report");
+        sparkReporter.config().setReportName("Test Results");
+
+        extent = new ExtentReports();
+        extent.attachReporter(sparkReporter);
+    }
+
+    public static void flushReport() {
+        if (extent != null) {
+            extent.flush();
+        }
+    }
+
+    public static void createTest(String testName) {
+        ExtentTest extentTest = extent.createTest(testName);
+        test.set(extentTest);
+    }
+
+    public static ExtentTest getTest() {
+        return test.get();
+    }
+
+    public static void removeTest() {
+        test.remove();
+    }
+
+    public static void logStepWithScreenshot(String message, WebDriver driver) {
+        ExtentTest extentTest = getTest();
+        if (extentTest != null) {
+            String base64 = ScreenshotUtils.captureBase64Screenshot(driver);
+            extentTest.info(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64).build());
+        } else {
+            System.out.println("⚠️ ExtentTest not initialized. Message: " + message);
+        }
+    }
+
+    public static void logStepWithScreenshot(String message) {
+        if (getTest() != null) {
+            getTest().info(message);
+        } else {
+            System.out.println("⚠️ ExtentTest not initialized. Message: " + message);
+        }
+    }
 }

@@ -6,6 +6,7 @@ import org.openqa.selenium.support.locators.RelativeLocator;
 import org.pom.base.BaseTest;
 import org.pom.enums.ConfigEnum;
 import org.pom.enums.LogLevelEnum;
+import org.pom.listeners.ExtentReportListeners;
 import org.pom.utils.StringHelper;
 
 import java.util.List;
@@ -48,11 +49,12 @@ public class PageCommonUtils {
                 case "javaScript" -> javascriptExecutor.executeScript("arguments[0].click();", element);
                 default -> element.click();
             }
-            if (isReportStep)
-                System.out.println("Clicked on <b>" + clickedElementName + FROM_BTAG_TEXT + clickedFrom + SUCCESSFULLY_BTAG_TEXT);
+            if (isReportStep) {
+                ExtentReportListeners.logStepWithScreenshot("Clicked on " + clickedElementName + " from " + clickedFrom, driver);
+            }
         } catch (ElementClickInterceptedException e) {
-            System.out.println("Unable to click on <b>" + clickedElementName + FROM_BTAG_TEXT + clickedFrom + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
-            throw new ElementNotInteractableException("Element is not intractable");
+            ExtentReportListeners.logStepWithScreenshot("Failed to click on " + clickedElementName + " due to " + e.getClass().getSimpleName(), driver);
+            throw new ElementNotInteractableException("Element is not interactable");
         }
     }
 
@@ -81,12 +83,13 @@ public class PageCommonUtils {
         try {
             if (actionUsing.equalsIgnoreCase(ACTIONS_TEXT))
                 actions.sendKeys(value).build().perform();
-            else element.sendKeys(value);
+            else
+                element.sendKeys(value);
             if (isMasked) value = value.replaceAll("\\S", "*");
             if (value.equalsIgnoreCase("     ")) value = "blank value only";
-            System.out.println("Entered <b>" + StringHelper.getInstance().removeScriptTagsFromString(value) + "</b> in <b>" + textFieldName + SUCCESSFULLY_BTAG_TEXT);
+            ExtentReportListeners.logStepWithScreenshot("Entered value in " + textFieldName + ": " + value, driver);
         } catch (Exception e) {
-            System.out.println("Unable to enter <b>" + StringHelper.getInstance().removeScriptTagsFromString(value) + "</b> in <b>" + textFieldName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to enter value in " + textFieldName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }
@@ -115,9 +118,9 @@ public class PageCommonUtils {
         try {
             element.sendKeys(Keys.chord(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE));
             if (isReportStep)
-                System.out.println("Cleared <b>" + textFieldName + SUCCESSFULLY_BTAG_TEXT);
+                ExtentReportListeners.logStepWithScreenshot("Cleared (using keyboard) " + textFieldName, driver);
         } catch (Exception e) {
-            System.out.println("Unable to clear <b>" + textFieldName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to clear (keyboard) " + textFieldName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }
@@ -129,9 +132,9 @@ public class PageCommonUtils {
             if (!element.getText().trim().equalsIgnoreCase(""))
                 JavaScriptActionUtilities.getInstance(driver).clearText(element);
             if (isReportStep)
-                System.out.println("Cleared <b>" + textFieldName + SUCCESSFULLY_BTAG_TEXT);
+                ExtentReportListeners.logStepWithScreenshot("Cleared " + textFieldName, driver);
         } catch (Exception e) {
-            System.out.println("Unable to clear <b>" + textFieldName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to clear " + textFieldName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }
@@ -146,9 +149,9 @@ public class PageCommonUtils {
         try {
             text = element.getText();
             if (isReportStep)
-                System.out.println("Captured text <b>" + text + FROM_BTAG_TEXT + fieldName + SUCCESSFULLY_BTAG_TEXT);
+                ExtentReportListeners.logStepWithScreenshot("Captured text from " + fieldName + ": " + text, driver);
         } catch (Exception e) {
-            System.out.println("Unable to capture text from <b>" + fieldName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to capture text from " + fieldName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
         return text;
@@ -181,9 +184,9 @@ public class PageCommonUtils {
         WaitUtilities.getInstance(driver).waitForElementVisible(element, elementName);
         try {
             value = element.getAttribute(attributeName);
-            System.out.println("Captured value <b>" + value + "</b> for <b>" + attributeName + FROM_BTAG_TEXT + elementName + SUCCESSFULLY_BTAG_TEXT);
+            ExtentReportListeners.logStepWithScreenshot("Captured attribute '" + attributeName + "' from " + elementName + ": " + value, driver);
         } catch (Exception e) {
-            System.out.println("Unable to capture value for <b>" + attributeName + FROM_BTAG_TEXT + elementName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to capture attribute '" + attributeName + "' from " + elementName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
         return value;
@@ -207,15 +210,16 @@ public class PageCommonUtils {
                     break;
                 }
                 default: {
-                    break;
+                    throw new IllegalArgumentException("Unsupported locator: " + locator);
                 }
             }
             return element;
         } catch (Exception e) {
-            System.out.println("Unable to find element due to exception - " + e.getClass().getSimpleName() + ".");
+            ExtentReportListeners.logStepWithScreenshot("Failed to locate element using " + locator + ": " + value + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }
+
 
     public void clearAndSendKeys(WebElement element, String textFieldName, String value) {
         clear(element, textFieldName);
@@ -323,9 +327,9 @@ public class PageCommonUtils {
         try {
             element.sendKeys(Keys.END);
             if (isReportStep)
-                System.out.println("Moved cursor to the rightmost position in <b>" + textFieldName + SUCCESSFULLY_BTAG_TEXT);
+                ExtentReportListeners.logStepWithScreenshot("Moved cursor to end of " + textFieldName, driver);
         } catch (Exception e) {
-            System.out.println("Unable to move cursor to the rightmost position in <b>" + textFieldName + DUE_TO_EXCEPTION_IBTAG_TEXT + e.getClass().getSimpleName() + CLOSE_IB_TAG);
+            ExtentReportListeners.logStepWithScreenshot("Failed to move cursor in " + textFieldName + " due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }

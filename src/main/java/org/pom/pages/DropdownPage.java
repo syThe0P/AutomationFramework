@@ -33,12 +33,14 @@ public class DropdownPage extends BasePage {
     }
 
     public DropdownPage clickOnDropdown() {
-        PageCommonUtils.getInstance(driver).click("dropdown", LocatorEnum.ID.value(), "Dropdown", "Dropdown Page");
+        WebElement dropdown = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.ID.value(), "dropdown");
+        PageCommonUtils.getInstance(driver).click(dropdown, "Dropdown", "Dropdown Page");
         return this;
     }
 
     public DropdownPage selectOptionFromDropdown(String option) {
-        PageCommonUtils.getInstance(driver).click("//option[contains(text(),'" + option + "')]", LocatorEnum.XPATH.value(), option, "Dropdown Page");
+        WebElement optionElement = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//option[contains(text(),'" + option + "')]");
+        PageCommonUtils.getInstance(driver).click(optionElement, option, "Dropdown Page");
         return this;
     }
 }

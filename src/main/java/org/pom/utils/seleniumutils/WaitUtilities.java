@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.pom.enums.ConfigEnum;
 import org.pom.enums.LogLevelEnum;
+import org.pom.listeners.ExtentReportListeners;
 import org.pom.utils.StringHelper;
 
 import java.io.File;
@@ -93,7 +94,7 @@ public class WaitUtilities {
                 case WAIT_FOR_ELEMENT_CLICKABLE_TEXT ->
                         returnElement = wait.until(ExpectedConditions.elementToBeClickable(element));
                 default ->
-                        System.out.println("Invalid condition <b>" + condition + "</b> provided.");
+                        ExtentReportListeners.logStepWithScreenshot("Invalid condition <b>" + condition + "</b> provided.", driver);
             }
         } catch (Exception e) {
             String stepDescription = "";
@@ -102,7 +103,7 @@ public class WaitUtilities {
             else {
                 stepDescription = condition + " failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
             }
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw e;
         }
         return returnElement;
@@ -119,7 +120,7 @@ public class WaitUtilities {
                 stepDescription = "waitForElementInvisible failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
             else
                 stepDescription = "waitForElementInvisible failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw e;
         }
         return result;
@@ -142,7 +143,7 @@ public class WaitUtilities {
             Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.out.println(e.getMessage());
+            ExtentReportListeners.logStepWithScreenshot(e.getMessage(), driver);
         }
     }
 
@@ -150,7 +151,7 @@ public class WaitUtilities {
         try {
             wait.until((ExpectedCondition<Boolean>) driver1 -> ((JavascriptExecutor) driver1).executeScript("return document.readyState").equals("complete"));
         } catch (Exception e) {
-            System.out.println("Page ready state complete failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE);
+            ExtentReportListeners.logStepWithScreenshot("Page ready state complete failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE, driver);
         }
     }
 
@@ -160,7 +161,7 @@ public class WaitUtilities {
                 wait.until((ExpectedCondition<Boolean>) driver1 -> ((JavascriptExecutor) driver1).executeScript("return jQuery.active == 0").equals(true));
             }
         } catch (Exception e) {
-            System.out.println("waitForAjax failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE);
+            ExtentReportListeners.logStepWithScreenshot("waitForAjax failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE, driver);
         }
     }
 
@@ -180,7 +181,7 @@ public class WaitUtilities {
                         returnElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(path)));
                 case "id" -> returnElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(path)));
                 default ->
-                        System.out.println("Invalid locator type <b>" + locator + "</b> provided.");
+                        ExtentReportListeners.logStepWithScreenshot("Invalid locator type <b>" + locator + "</b> provided.", driver);
             }
         } catch (Exception e) {
             String stepDescription = "";
@@ -188,7 +189,7 @@ public class WaitUtilities {
                 stepDescription = "visibilityOfElementLocated failed for locator <b>" + path + DUE_TO_EXCEPTION_TAG_WITHIBTAG + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
             else
                 stepDescription = "visibilityOfElementLocated failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw e;
         }
         return returnElement;
@@ -227,7 +228,7 @@ public class WaitUtilities {
                 stepDescription = "waitForElementVisibleWithPageRefresh failed due to exception - <b><i>" + exceptionMessage + CLOSE_IB_TAGE;
             else
                 stepDescription = "waitForElementVisibleWithPageRefresh failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + exceptionMessage + CLOSE_IB_TAGE;
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw new StaleElementReferenceException(exceptionMessage);
         }
         return returnElement;
@@ -255,7 +256,7 @@ public class WaitUtilities {
                 stepDescription = "waitForElementVisibleWithPageRefresh failed due to exception - <b><i>" + exceptionMessage + CLOSE_IB_TAGE;
             else
                 stepDescription = "waitForElementVisibleWithPageRefresh failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + exceptionMessage + CLOSE_IB_TAGE;
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw new IllegalArgumentException(exceptionMessage);
         }
         return returnElement;
@@ -270,7 +271,7 @@ public class WaitUtilities {
                 stepDescription = "waitForElementInvisible failed due to exception - <b><i>" + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
             else
                 stepDescription = "waitForElementInvisible failed for element <b>" + StringHelper.getInstance().removeScriptTagsFromString(elementName) + DUE_TO_EXCEPTION_TAG_WITHIBTAG + e.getClass().getSimpleName() + CLOSE_IB_TAGE;
-            System.out.println(stepDescription);
+            ExtentReportListeners.logStepWithScreenshot(stepDescription, driver);
             throw e;
         }
     }
@@ -288,7 +289,7 @@ public class WaitUtilities {
                 return file.exists();
             });
         } catch (Exception e) {
-            System.out.println("File [" + path + "] not found till " + seconds[0] + " seconds due to " + e.getClass().getSimpleName());
+            ExtentReportListeners.logStepWithScreenshot("File [" + path + "] not found till " + seconds[0] + " seconds due to " + e.getClass().getSimpleName(), driver);
             throw e;
         }
     }
