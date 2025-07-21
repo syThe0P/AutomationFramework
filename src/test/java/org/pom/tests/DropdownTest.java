@@ -6,6 +6,7 @@ import org.pom.pages.DropdownPage;
 import org.pom.utils.seleniumutils.WaitUtilities;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
 @Listeners(ExtentReportListeners.class)
 public class DropdownTest extends BaseTest{
 
@@ -18,4 +19,5 @@ public class DropdownTest extends BaseTest{
         dropdownPage.selectOptionFromDropdown("Option 1");
         WaitUtilities.getInstance(getDriver()).applyStaticWait(2);
     }
+
 }

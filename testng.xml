@@ -1,11 +1,29 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="AutomationFrameworkSuite">
+<suite name="AutomationFrameworkSuite-Methods" parallel="methods" thread-count="4">
     <listeners>
         <listener class-name="org.pom.listeners.ExtentReportListeners"/>
     </listeners>
-    <test name="FirstTestExecution">
+    <test name="RegressionSuite">
         <classes>
-            <class name="org.pom.tests.LoginTest"/>
+            <!-- Run all methods in LoginTest if <methods> is omitted or empty -->
+            <class name="org.pom.tests.LoginTest">
+                <!--
+                <methods>
+                    <include name="yourMethodName"/>
+                </methods>
+                -->
+            </class>
+            <class name="org.pom.tests.DropdownTest">
+                <!--
+                <methods>
+                    <include name="yourDropdownMethod"/>
+                </methods>
+                -->
+            </class>
+            <!-- Add more classes as needed -->
         </classes>
     </test>
 </suite>
+
+
+        <!-- mvn test -DsuiteXmlFile=testng.xml -->
