@@ -103,10 +103,6 @@ public class ExtentReportListeners implements ITestListener {
     }
 
     public static void createTest(String testName) {
-        if (extent == null) {
-            System.out.println("⚠️ ExtentReports not initialized. Cannot create test: " + testName);
-            return;
-        }
         ExtentTest extentTest = extent.createTest(testName);
         test.set(extentTest);
     }
