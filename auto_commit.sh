@@ -47,18 +47,20 @@ gh pr create --base master --head "$BRANCH_NAME" --title "$PR_TITLE" --body "Thi
 # Capture the PR link
 PR_URL=$(gh pr view --json url -q .url)
 
+# Send email notification with PR link
+EMAIL_SUBJECT="New PR Created: $PR_TITLE"
+EMAIL_BODY="A new Pull Request has been created:\n$PR_URL"
+EMAIL_RECIPIENTS="nitish.joon@brevo.com,mayank.rana@brevo.com,pranav.kumar@brevo.com"
+echo -e "$EMAIL_BODY" | mail -s "$EMAIL_SUBJECT" $EMAIL_RECIPIENTS
+
 # Send a Slack notification with a clickable PR link
 SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
-CHANNEL_ID="C09736EBY01"
 TEAM_MEMBER="<@U03DP6KFJAC>"
 
 curl -X POST -H 'Content-type: application/json' --data "{
-    \"channel\": \"${CHANNEL_ID}\",
     \"text\": \"💻 Self-Healing Update Complete. ✋🏻 ${CURRENT_DATE_TIME}\n${TEAM_MEMBER}, a new PR has been created: *<${PR_URL}|PR>*\"
 }" $SLACK_WEBHOOK_URL
 
 # Switch back to the original branch and pull latest changes
 git checkout "$ORIGINAL_BRANCH"
 git pull origin "$ORIGINAL_BRANCH"
-
-echo "✅ Switched back to original branch: $ORIGINAL_BRANCH"
