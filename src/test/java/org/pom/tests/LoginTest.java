@@ -59,4 +59,9 @@ public class LoginTest extends BaseTest{
         AssertUtils.getInstance().assertFalse(true, "Forcing failure to test Jira bug creation");
     }
 
+    @Test
+    public void testParallelExecution() {
+        System.out.println("[" + Thread.currentThread().getName() + "] LoginTest running");
+    }
+
 }
