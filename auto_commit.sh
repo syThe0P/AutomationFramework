@@ -48,8 +48,8 @@ gh pr create --base master --head "$BRANCH_NAME" --title "$PR_TITLE" --body "Thi
 PR_URL=$(gh pr view --json url -q .url)
 
 # Send a Slack notification with a clickable PR link
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
-CHANNEL_ID="C09736EBY01"
+SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
+CHANNEL_ID="C08K6022FA4"
 TEAM_MEMBER="<@U03DP6KFJAC>"
 
 curl -X POST -H 'Content-type: application/json' --data "{
