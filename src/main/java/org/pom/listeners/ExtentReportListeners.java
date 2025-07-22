@@ -67,13 +67,28 @@ public class ExtentReportListeners implements ITestListener {
         test.get().skip(result.getThrowable());
     }
 
+//    @Override
+//    public void onFinish(ITestContext context) {
+//        extent.flush();
+//        String absPath = new java.io.File(reportFilePath).getAbsolutePath();
+//        String clickable = "file://" + absPath;
+//        System.out.println("\nReport link: " + clickable + "\n");
+//    }
+
     @Override
     public void onFinish(ITestContext context) {
         extent.flush();
-        String absPath = new java.io.File(reportFilePath).getAbsolutePath();
+
+        // Always resolve from current directory (Jenkins workspace or local project)
+        String reportFilePath = "test-output/ExtentReport_" + DateTimeUtils.getInstance().getCurrentTime() + ".html";
+        String absPath = new File(System.getProperty("user.dir"), reportFilePath).getAbsolutePath();
+
         String clickable = "file://" + absPath;
-        System.out.println("\nReport link: " + clickable + "\n");
+        System.out.println("\n===============================");
+        System.out.println("🔗 Extent Report Link (Jenkins): " + clickable);
+        System.out.println("===============================\n");
     }
+
 
     public static void attachBase64Image(String base64, String title) {
         if (test.get() != null && base64 != null) {
