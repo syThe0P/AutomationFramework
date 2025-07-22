@@ -21,6 +21,7 @@ public class ExtentReportListeners implements ITestListener {
     public static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
     public static final ThreadLocal<ExtentTest> summaryTest = new ThreadLocal<>();
     private static String reportFilePath;
+    private static String latestReportPath;
 
     private void deleteOldReports() {
         File dir = new File("test-output");
@@ -38,11 +39,13 @@ public class ExtentReportListeners implements ITestListener {
         String timestamp = DateTimeUtils.getInstance().getCurrentDate("yyyy-MM-dd") + "_" + DateTimeUtils.getInstance().getCurrentTime();
         reportFilePath = "test-output/ExtentReport_" + timestamp + ".html";
         ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
+        ExtentSparkReporter latestSpark = new ExtentSparkReporter(latestReportPath);
         spark.config().setReportName("Automation Test Results");
         spark.config().setDocumentTitle("Test Report");
 
         extent = new ExtentReports();
-        extent.attachReporter(spark);
+//        extent.attachReporter(spark);
+        extent.attachReporter(spark, latestSpark);
         extent.setSystemInfo("Tester", "Pranav Kumar");
     }
 
