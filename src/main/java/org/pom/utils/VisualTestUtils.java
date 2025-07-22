@@ -21,7 +21,6 @@ public class VisualTestUtils {
     private static final String BASELINE_DIR = "src/test/resources/baseline_screenshots/";
     private static final String DIFF_DIR = "test-output/visual-diffs/";
 
-
     public static boolean compareWithBaseline(WebDriver driver, String pageName) {
         try {
             File baseline = new File(BASELINE_DIR + pageName + ".png");
@@ -50,15 +49,37 @@ public class VisualTestUtils {
             ImageComparisonResult result = comparison.compareImages();
             ImageComparisonState state = result.getImageComparisonState();
 
+            // --- Begin: Added metrics calculation ---
+            int width = Math.min(expectedImg.getWidth(), actualImg.getWidth());
+            int height = Math.min(expectedImg.getHeight(), actualImg.getHeight());
+            int diffPixels = 0;
+            int minX = width, minY = height, maxX = -1, maxY = -1;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (expectedImg.getRGB(x, y) != actualImg.getRGB(x, y)) {
+                        diffPixels++;
+                        if (x < minX) minX = x;
+                        if (y < minY) minY = y;
+                        if (x > maxX) maxX = x;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+            }
+            int totalPixels = width * height;
+            double diffPercent = totalPixels > 0 ? (100.0 * diffPixels / totalPixels) : 0;
+            String boundingBox = (diffPixels > 0) ? "(" + minX + "," + minY + ") to (" + maxX + "," + maxY + ")" : "N/A";
+            String diffDetails = "<br><b>Diff Pixels:</b> " + diffPixels + " (" + String.format("%.2f", diffPercent) + "%)" +
+                    "<br><b>Bounding Box:</b> " + boundingBox;
+            // --- End: Added metrics calculation ---
+
             if (state != ImageComparisonState.MATCH) {
                 BufferedImage diffImg = result.getResult();
                 if (diffImg != null) {
                     ImageIO.write(diffImg, "png", diff);
                     String base64Diff = encodeImageToBase64(diff);
 
-                    // Log the result state only (since other metrics are not exposed)
-                    String diffMetrics = "<br><b>Visual Diff State:</b> " + state;
-
+                    // Log the result state and new metrics
+                    String diffMetrics = "<br><b>Visual Diff State:</b> " + state + diffDetails;
                     ReportUtils.getInstance().reportStep(driver, "Visual difference found for <b>" + pageName + "</b> (see diff image)" + diffMetrics, LogLevelEnum.INFO);
                     if (base64Diff != null) {
                         ExtentReportListeners.test.get().info("Diff image:",
