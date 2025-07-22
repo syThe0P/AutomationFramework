@@ -13,11 +13,15 @@ import org.pom.utils.VisualTestUtils;
 import org.pom.utils.seleniumutils.PageCommonUtils;
 import org.pom.utils.seleniumutils.ValidationCommonUtils;
 import org.pom.utils.seleniumutils.WaitUtilities;
+import org.pom.utils.seleniumutils.XPathUtils;
 
 public class LoginPage extends BasePage {
 
     @FindBy(xpath = "//h2[contains(text(),'Login Page')]")
     private WebElement heading;
+
+    @FindBy(xpath = "//p[@type='submit']")
+    private WebElement loginButton;
 
     public LoginPage(WebDriver driver){
         super(driver);
@@ -42,8 +46,8 @@ public class LoginPage extends BasePage {
     }
 
     public LoginPage clickLoginButton() {
-        WebElement loginButton = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//button[@type='submit']");
-        PageCommonUtils.getInstance(driver).click(loginButton, "Login button", "Login Page");
+        WebElement clickLoginButton = XPathUtils.findElementWithFallback(driver, loginButton, null, element -> element);
+        PageCommonUtils.getInstance(driver).click(clickLoginButton, "Login button", "Login Page");
         return this;
     }
 
