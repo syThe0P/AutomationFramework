@@ -1,1 +1,1 @@
-{"verifyInvalidLoginCredentials(clickLoginButton)":"//p[@type='submit']"}
+{"verifyInvalidLoginCredentials(clickLoginButton)":"//h2[@type='submit']"}
