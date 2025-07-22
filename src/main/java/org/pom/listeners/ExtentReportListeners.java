@@ -21,7 +21,6 @@ public class ExtentReportListeners implements ITestListener {
     public static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
     public static final ThreadLocal<ExtentTest> summaryTest = new ThreadLocal<>();
     private static String reportFilePath;
-    private static String latestReportPath;
 
     private void deleteOldReports() {
         File dir = new File("test-output");
@@ -39,13 +38,11 @@ public class ExtentReportListeners implements ITestListener {
         String timestamp = DateTimeUtils.getInstance().getCurrentDate("yyyy-MM-dd") + "_" + DateTimeUtils.getInstance().getCurrentTime();
         reportFilePath = "test-output/ExtentReport_" + timestamp + ".html";
         ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
-        ExtentSparkReporter latestSpark = new ExtentSparkReporter(latestReportPath);
         spark.config().setReportName("Automation Test Results");
         spark.config().setDocumentTitle("Test Report");
 
         extent = new ExtentReports();
-//        extent.attachReporter(spark);
-        extent.attachReporter(spark, latestSpark);
+        extent.attachReporter(spark);
         extent.setSystemInfo("Tester", "Pranav Kumar");
     }
 
@@ -71,40 +68,19 @@ public class ExtentReportListeners implements ITestListener {
     }
 
 
-//    @Override
-//    public void onFinish(ITestContext context) {
-//        extent.flush();
-//
-//        // Always resolve from current directory (Jenkins workspace or local project)
-//        String reportFilePath = "test-output/ExtentReport_" + DateTimeUtils.getInstance().getCurrentTime() + ".html";
-//        String absPath = new File(System.getProperty("user.dir"), reportFilePath).getAbsolutePath();
-//
-//        String clickable = "file://" + absPath;
-//        System.out.println("\n===============================");
-//        System.out.println("🔗 Extent Report Link (Jenkins): " + clickable);
-//        System.out.println("===============================\n");
-//    }
-
     @Override
     public void onFinish(ITestContext context) {
         extent.flush();
 
-        try {
-            // Copy the latest report to a stable file
-            String latestPath = "test-output/ExtentReport_latest.html";
-            File original = new File(reportFilePath);
-            File stable = new File(latestPath);
+        // Always resolve from current directory (Jenkins workspace or local project)
+        String reportFilePath = "test-output/ExtentReport_" + DateTimeUtils.getInstance().getCurrentTime() + ".html";
+        String absPath = new File(System.getProperty("user.dir"), reportFilePath).getAbsolutePath();
 
-            java.nio.file.Files.copy(original.toPath(), stable.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-            System.out.println("⚠️ Failed to copy report for Jenkins HTML Publisher: " + e.getMessage());
-        }
-
+        String clickable = "file://" + absPath;
         System.out.println("\n===============================");
-        System.out.println("✅ Extent Report generated.");
+        System.out.println("🔗 Extent Report Link (Jenkins): " + clickable);
         System.out.println("===============================\n");
     }
-
 
 
     public static void attachBase64Image(String base64, String title) {
