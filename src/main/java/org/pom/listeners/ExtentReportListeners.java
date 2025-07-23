@@ -12,7 +12,6 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.pom.utils.DateTimeUtils;
 
-
 import java.io.File;
 
 public class ExtentReportListeners implements ITestListener {
@@ -20,7 +19,7 @@ public class ExtentReportListeners implements ITestListener {
     private static ExtentReports extent;
     public static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
     public static final ThreadLocal<ExtentTest> summaryTest = new ThreadLocal<>();
-    private static String reportFilePath;
+    private static String reportFilePath; // Store report path for reuse
 
     private void deleteOldReports() {
         File dir = new File("test-output");
@@ -36,8 +35,11 @@ public class ExtentReportListeners implements ITestListener {
     public void onStart(ITestContext context) {
         deleteOldReports();
         String timestamp = DateTimeUtils.getInstance().getCurrentDate("yyyy-MM-dd") + "_" + DateTimeUtils.getInstance().getCurrentTime();
+        // Use relative path for portability
         reportFilePath = "test-output/ExtentReport_" + timestamp + ".html";
-        ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
+        File reportFile = new File(System.getProperty("user.dir"), reportFilePath);
+
+        ExtentSparkReporter spark = new ExtentSparkReporter(reportFile);
         spark.config().setReportName("Automation Test Results");
         spark.config().setDocumentTitle("Test Report");
 
@@ -70,15 +72,30 @@ public class ExtentReportListeners implements ITestListener {
     @Override
     public void onFinish(ITestContext context) {
         extent.flush();
-        String absPath = new java.io.File(reportFilePath).getAbsolutePath();
+
+        // Use the same reportFilePath from onStart
+        File reportFile = new File(System.getProperty("user.dir"), reportFilePath);
+        String absPath = reportFile.getAbsolutePath();
         String clickable = "file://" + absPath;
-        System.out.println("\nReport link: " + clickable + "\n");
+
+        // Verify if the report file exists
+        if (reportFile.exists()) {
+            System.out.println("\n===============================");
+            System.out.println("🔗 Extent Report Link (Local): " + clickable);
+            System.out.println("📍 Relative Path: ./" + reportFilePath);
+            System.out.println("📂 Absolute Path: " + absPath);
+            System.out.println("===============================\n");
+        } else {
+            System.out.println("\n===============================");
+            System.out.println("⚠️ Report file not found at: " + absPath);
+            System.out.println("===============================\n");
+        }
     }
 
     public static void attachBase64Image(String base64, String title) {
         if (test.get() != null && base64 != null) {
             try {
-                test.get().info(title, com.aventstack.extentreports.MediaEntityBuilder
+                test.get().info(title, MediaEntityBuilder
                         .createScreenCaptureFromBase64String(base64).build());
             } catch (Exception e) {
                 test.get().info(title + " (image attachment failed)");
