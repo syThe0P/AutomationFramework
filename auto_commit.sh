@@ -47,22 +47,29 @@ gh pr create --base master --head "$BRANCH_NAME" --title "$PR_TITLE" --body "Thi
 # Capture the PR link
 PR_URL=$(gh pr view --json url -q .url)
 
-# Set sender and receiver email addresses
-SENDER_EMAIL="mayankrana720@gmail.com"
-RECEIVER_EMAIL="pranavkumar1522@gmail.com"
+# Install msmtp if not already installed
+# Configure msmtp for Gmail
+cat <<EOF > ~/.msmtprc
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
 
-# Compose the email
-EMAIL_SUBJECT="Auto-update XPaths ${CURRENT_DATE_TIME}"
-EMAIL_BODY="💻 Self-Healing Update Complete. ✋🏻 ${CURRENT_DATE_TIME}\nA new PR has been created: ${PR_URL}"
+account gmail
+host smtp.gmail.com
+port 587
+from neelamrana710@gmail.com
+user neelamrana710@gmail.com
+password ieis fjqc nvqm ykwi
 
-# Send the email using sendmail
-{
-  echo "From: ${SENDER_EMAIL}"
-  echo "To: ${RECEIVER_EMAIL}"
-  echo "Subject: ${EMAIL_SUBJECT}"
-  echo ""
-  echo "${EMAIL_BODY}"
-} | sendmail -t
+account default : gmail
+EOF
+
+chmod 600 ~/.msmtprc
+
+# Send an email using msmtp
+echo -e "Subject: Auto-update XPaths\n\nA new PR has been created: ${PR_URL}" | msmtp --from=default -t pranavkumar1522@gmail.com
 
 # Switch back to the original branch and pull latest changes
 git checkout "$ORIGINAL_BRANCH"
