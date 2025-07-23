@@ -47,15 +47,22 @@ gh pr create --base master --head "$BRANCH_NAME" --title "$PR_TITLE" --body "Thi
 # Capture the PR link
 PR_URL=$(gh pr view --json url -q .url)
 
-# Send a Slack notification with a clickable PR link
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
-CHANNEL_ID="C08K6022FA4"
-TEAM_MEMBER="<@U03DP6KFJAC>"
+# Set sender and receiver email addresses
+SENDER_EMAIL="mayankrana720@gmail.com"
+RECEIVER_EMAIL="pranavkumar1522@gmail.com"
 
-curl -X POST -H 'Content-type: application/json' --data "{
-    \"channel\": \"${CHANNEL_ID}\",
-    \"text\": \"💻 Self-Healing Update Complete. ✋🏻 ${CURRENT_DATE_TIME}\n${TEAM_MEMBER}, a new PR has been created: *<${PR_URL}|PR>*\"
-}" $SLACK_WEBHOOK_URL
+# Compose the email
+EMAIL_SUBJECT="Auto-update XPaths ${CURRENT_DATE_TIME}"
+EMAIL_BODY="💻 Self-Healing Update Complete. ✋🏻 ${CURRENT_DATE_TIME}\nA new PR has been created: ${PR_URL}"
+
+# Send the email using sendmail
+{
+  echo "From: ${SENDER_EMAIL}"
+  echo "To: ${RECEIVER_EMAIL}"
+  echo "Subject: ${EMAIL_SUBJECT}"
+  echo ""
+  echo "${EMAIL_BODY}"
+} | sendmail -t
 
 # Switch back to the original branch and pull latest changes
 git checkout "$ORIGINAL_BRANCH"
