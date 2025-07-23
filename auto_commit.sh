@@ -69,7 +69,7 @@ EOF
 chmod 600 ~/.msmtprc
 
 # Send an email using msmtp
-echo -e "Subject: Auto-update XPaths\n\nA new PR has been created: ${PR_URL}" | msmtp --from=default -t mayank.rana+123@mailinator.com
+echo -e "Subject: Auto-update XPaths\n\nA new PR has been created: ${PR_URL}" | msmtp --from=default -t r4nA.m!yAnK_8Z1w@mailinator.com
 
 # Switch back to the original branch and pull latest changes
 git checkout "$ORIGINAL_BRANCH"
