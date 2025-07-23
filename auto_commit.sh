@@ -61,7 +61,7 @@ host smtp.gmail.com
 port 587
 from neelamrana710@gmail.com
 user neelamrana710@gmail.com
-password ieis fjqc nvqm ykwi
+password bdgk amva qnko keiu
 
 account default : gmail
 EOF
