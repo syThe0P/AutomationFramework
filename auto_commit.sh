@@ -53,7 +53,7 @@ cat <<EOF > ~/.msmtprc
 defaults
 auth           on
 tls            on
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
+tls_trust_file /etc/ssl/cert.pem
 logfile        ~/.msmtp.log
 
 account gmail
@@ -69,7 +69,7 @@ EOF
 chmod 600 ~/.msmtprc
 
 # Send an email using msmtp
-echo -e "Subject: Auto-update XPaths\n\nA new PR has been created: ${PR_URL}" | msmtp --from=default -t pranavkumar1522@gmail.com
+echo -e "Subject: Auto-update XPaths\n\nA new PR has been created: ${PR_URL}" | msmtp --from=default -t mayankrana720@gmail.com
 
 # Switch back to the original branch and pull latest changes
 git checkout "$ORIGINAL_BRANCH"
