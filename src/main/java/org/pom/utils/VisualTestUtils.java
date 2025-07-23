@@ -23,12 +23,10 @@ public class VisualTestUtils {
 
     public static boolean compareWithBaseline(WebDriver driver, String pageName) {
         try {
-            File baseline = new File(BASELINE_DIR + pageName + ".png");
             File actual = new File(DIFF_DIR + pageName + "_actual.png");
             File diff = new File(DIFF_DIR + pageName + "_diff.png");
 
             // Ensure directories exist
-            baseline.getParentFile().mkdirs();
             actual.getParentFile().mkdirs();
             diff.getParentFile().mkdirs();
 
@@ -36,10 +34,16 @@ public class VisualTestUtils {
             File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             Files.copy(screenshot.toPath(), actual.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
+            // Use the actual screenshot filename for baseline image
+            String actualFileName = actual.getName(); // e.g., LoginPage_actual.png
+            String baseImageName = actualFileName.replace("_actual", ""); // e.g., LoginPage.png
+            File baseline = new File(BASELINE_DIR + baseImageName);
+            baseline.getParentFile().mkdirs();
+
             if (!baseline.exists()) {
                 // First run: save current screenshot as baseline
                 Files.copy(actual.toPath(), baseline.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                ReportUtils.getInstance().reportStep(driver, "Baseline screenshot created for <b>" + pageName + "</b>.", LogLevelEnum.INFO);
+                ReportUtils.getInstance().reportStep(driver, "Baseline screenshot created for <b>" + baseImageName + "</b>.", LogLevelEnum.INFO);
                 return true;
             }
 
@@ -77,20 +81,30 @@ public class VisualTestUtils {
                 if (diffImg != null) {
                     ImageIO.write(diffImg, "png", diff);
                     String base64Diff = encodeImageToBase64(diff);
+                    String base64Baseline = encodeImageToBase64(baseline);
+                    String base64Actual = encodeImageToBase64(actual);
 
                     // Log the result state and new metrics
                     String diffMetrics = "<br><b>Visual Diff State:</b> " + state + diffDetails;
-                    ReportUtils.getInstance().reportStep(driver, "Visual difference found for <b>" + pageName + "</b> (see diff image)" + diffMetrics, LogLevelEnum.INFO);
+                    ReportUtils.getInstance().reportStep(driver, "Visual difference found for <b>" + baseImageName + "</b> (see images below)" + diffMetrics, LogLevelEnum.INFO);
+                    if (base64Baseline != null) {
+                        ExtentReportListeners.test.get().info("Baseline image:",
+                                com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromBase64String(base64Baseline).build());
+                    }
+                    if (base64Actual != null) {
+                        ExtentReportListeners.test.get().info("Actual image:",
+                                com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromBase64String(base64Actual).build());
+                    }
                     if (base64Diff != null) {
                         ExtentReportListeners.test.get().info("Diff image:",
                                 com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromBase64String(base64Diff).build());
                     }
                 } else {
-                    ReportUtils.getInstance().reportStep(driver, "Visual difference found for <b>" + pageName + "</b> but diff image could not be generated.", LogLevelEnum.INFO);
+                    ReportUtils.getInstance().reportStep(driver, "Visual difference found for <b>" + baseImageName + "</b> but diff image could not be generated.", LogLevelEnum.INFO);
                 }
                 return false;
             } else {
-                ReportUtils.getInstance().reportStep(driver, "No visual difference for <b>" + pageName + "</b>.", LogLevelEnum.PASS);
+                ReportUtils.getInstance().reportStep(driver, "No visual difference for <b>" + baseImageName + "</b>.", LogLevelEnum.PASS);
                 return true;
             }
         } catch (Exception e) {
