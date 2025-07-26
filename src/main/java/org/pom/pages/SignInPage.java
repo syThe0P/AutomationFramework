@@ -54,5 +54,12 @@ public class SignInPage extends BasePage {
         return this;
     }
 
+    //optionText for password is 'testingisfun99'
+    public SignInPage selectOptionFromDropdown(String optionText) {
+        WebElement option = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//div[contains(@id,'react-select') and contains(text(),'" + optionText + "')]");
+        PageCommonUtils.getInstance(driver).click(option, "Dropdown option: " + optionText, "Sign In Page");
+        return this;
+    }
+
 }
 
