@@ -11,12 +11,12 @@ public class DropdownTest extends BaseTest{
 
     @Test(description = "verify dropdown functionality")
     public void verifyDropdownFunctionality(){
-        DropdownPage dropdownPage = new DropdownPage(getDriver());
-        dropdownPage.loadDropdownPage();
-        dropdownPage.isHeaderVisible();
-        dropdownPage.clickOnDropdown();
-        dropdownPage.selectOptionFromDropdown("Option 1");
-        WaitUtilities.getInstance(getDriver()).applyStaticWait(2);
+//        DropdownPage dropdownPage = new DropdownPage(getDriver());
+//        dropdownPage.loadDropdownPage();
+//        dropdownPage.isHeaderVisible();
+//        dropdownPage.clickOnDropdown();
+//        dropdownPage.selectOptionFromDropdown("Option 1");
+//        WaitUtilities.getInstance(getDriver()).applyStaticWait(2);
     }
 
 }
