@@ -59,9 +59,9 @@ logfile        ~/.msmtp.log
 account gmail
 host smtp.gmail.com
 port 587
-from neelamrana710@gmail.com
-user neelamrana710@gmail.com
-password bdgkamvaqnkokeiu
+from user-email@gmail.com
+user user-email@gmail.com
+password apppassword
 
 account default : gmail
 EOF

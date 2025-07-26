@@ -4,6 +4,7 @@ import org.pom.base.BaseTest;
 import org.pom.listeners.ExtentReportListeners;
 import org.pom.pages.CheckOutSideModal;
 import org.pom.pages.DemoPage;
+import org.pom.pages.SignInPage;
 import org.pom.utils.BugReporter;
 import org.pom.utils.seleniumutils.WaitUtilities;
 import org.testng.ITestResult;

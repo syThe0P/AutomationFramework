@@ -32,15 +32,15 @@ public class SignInPage extends BasePage {
         return ValidationCommonUtils.getInstance(driver).isDisplayed(headingImage, "Login Page Header", "Login Page");
     }
 
-    public SignInPage enterTextInUserNameOrPasswordInputBox(String inputBoxId,String placeholderName, String inputText) {
-        WebElement inputBox = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//div[@id='"+inputBoxId+"']//div[contains(text(),'"+placeholderName+"')]");
+    public SignInPage enterTextInUserNameOrPasswordInputBox(String placeholderName, String inputText) {
+        WebElement inputBox = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//div[contains(text(),'"+placeholderName+"')]/parent::div[contains(@class,'css-1hwfws3')]");
         PageCommonUtils.getInstance(driver).clearAndSendKeys(inputBox, "Input box : " + placeholderName, inputText);
         return this;
     }
 
-    public SignInPage clickOnLogInButton() {
-        PageCommonUtils.getInstance(driver).click(loginInButton, "Sign In button", "Sign In Page");
-        return this;
+    public DemoPage clickOnLogInButton() {
+        PageCommonUtils.getInstance(driver).click(loginInButton, "Login In button", "Sign In Page");
+        return new DemoPage(driver);
     }
 
     //errorMessage can be "Invalid Username" or "Invalid Password"
@@ -49,7 +49,7 @@ public class SignInPage extends BasePage {
     }
 
     public SignInPage clickOnUserNameOrPasswordDropdown(String inputBoxId, String placeholderName) {
-        WebElement dropdown = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//div[@id='" + inputBoxId + "']//div[contains(@class,'" + placeholderName + "')]");
+        WebElement dropdown = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.XPATH.value(), "//div[@id='" + inputBoxId + "']//div[contains(text(),'" + placeholderName + "')]");
         PageCommonUtils.getInstance(driver).click(dropdown, "Dropdown for " + placeholderName, "Sign In Page");
         return this;
     }
