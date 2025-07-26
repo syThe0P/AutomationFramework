@@ -3,6 +3,7 @@ package org.pom.pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.pom.base.BasePage;
+import org.pom.base.BaseTest;
 import org.pom.enums.LocatorEnum;
 import org.pom.utils.seleniumutils.ValidationCommonUtils;
 
@@ -13,6 +14,11 @@ public class OffersPage extends BasePage {
     public OffersPage(WebDriver driver){
         super(driver);
         PageFactory.initElements(driver,this);
+    }
+
+    public OffersPage load() {
+        load(BaseTest.linkedHashMapMasterTestData.get("BASE_URL") + "/offers");
+        return this;
     }
 
     public boolean isOffersPageHeadingDisplayed(){
