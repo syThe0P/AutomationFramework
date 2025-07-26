@@ -28,7 +28,7 @@ public class FavouritesPage extends BasePage {
     }
 
     public FavouritesPage removeProductFromFavourites(String productName) {
-        PageCommonUtils.getInstance(driver).click("//button[contains(@class,'Button clicked')]/parent::div/following-sibling::div/img[@alt='" + productName + "']", LocatorEnum.XPATH.value(), productName + " remove from favourites button", PAGE_NAME);
+        PageCommonUtils.getInstance(driver).click("//img[@alt='"+productName+"']/parent::div/preceding-sibling::div//button[contains(@class,'Button clicked')]", LocatorEnum.XPATH.value(), productName + " remove from favourites button", PAGE_NAME);
         return this;
     }
 }

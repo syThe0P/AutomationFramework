@@ -87,5 +87,10 @@ public class DemoPage extends BasePage {
         return this;
     }
 
+    public DemoPage clickOnAddToFavouritesButton(String productName){
+        PageCommonUtils.getInstance(driver).click("//img[@alt='"+productName+"']/parent::div/preceding-sibling::div//button[contains(@class,'Button clicked')]", LocatorEnum.XPATH.value(), productName + " remove from favourites button", PAGE_NAME);
+        return this;
+    }
+
 
 }
