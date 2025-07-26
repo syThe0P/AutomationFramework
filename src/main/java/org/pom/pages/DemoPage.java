@@ -9,6 +9,7 @@ import org.pom.base.BasePage;
 import org.pom.base.BaseTest;
 import org.pom.enums.LocatorEnum;
 import org.pom.utils.seleniumutils.PageCommonUtils;
+import org.pom.utils.seleniumutils.ValidationCommonUtils;
 
 public class DemoPage extends BasePage {
 
@@ -90,6 +91,11 @@ public class DemoPage extends BasePage {
     public DemoPage clickOnAddToFavouritesButton(String productName){
         PageCommonUtils.getInstance(driver).click("//img[@alt='"+productName+"']/parent::div/preceding-sibling::div//button[contains(@class,'Button clicked')]", LocatorEnum.XPATH.value(), productName + " remove from favourites button", PAGE_NAME);
         return this;
+    }
+
+    public boolean isLogoutOrSignInButtonDisplayed(String buttonId){
+        WebElement button = PageCommonUtils.getInstance(driver).createWebElementByLocator(LocatorEnum.ID.value(), buttonId);
+        return ValidationCommonUtils.getInstance(driver).isDisplayed(button, "button " + buttonId , PAGE_NAME);
     }
 
 
