@@ -29,7 +29,7 @@ public class DemoPage extends BasePage {
     }
 
     public DemoPage load() {
-        load(BaseTest.linkedHashMapMasterTestData.get("BASE_URL"));
+        load("https://testathon.live/");
         areHeadersVisible();
         return this;
     }
