@@ -81,7 +81,11 @@ public class DemoPage extends BasePage {
         return !driver.findElements(By.xpath(xpath)).isEmpty();
     }
 
-
+    public DemoPage clickOnAddToCart(String productName) {
+        String xpath = "//p[normalize-space()=\"" + productName + "\"]/following-sibling::div[contains(text(), 'Add to cart')]";
+        PageCommonUtils.getInstance(driver).click(xpath, LocatorEnum.XPATH.value(), productName + " add to cart button", PAGE_NAME);
+        return this;
+    }
 
 
 }
