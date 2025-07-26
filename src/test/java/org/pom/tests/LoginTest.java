@@ -1,7 +1,6 @@
 package org.pom.tests;
 
 import org.pom.base.BaseTest;
-import org.pom.pages.LoginPage;
 import org.pom.utils.AssertUtils;
 import org.pom.utils.BugReporter;
 import org.pom.utils.seleniumutils.WaitUtilities;
