@@ -6,8 +6,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.pom.base.BasePage;
+import org.pom.base.BaseTest;
 import org.pom.enums.LocatorEnum;
 import org.pom.utils.seleniumutils.PageCommonUtils;
+import org.pom.utils.seleniumutils.ValidationCommonUtils;
+import org.pom.utils.seleniumutils.WaitUtilities;
 
 public class DemoPage extends BasePage {
 
@@ -25,6 +28,28 @@ public class DemoPage extends BasePage {
     public DemoPage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
+    }
+
+    public DemoPage load() {
+        load(BaseTest.linkedHashMapMasterTestData.get("BASE_URL"));
+        areHeadersVisible();
+        return this;
+    }
+
+    public boolean areHeadersVisible() {
+        String xpathTemplate = "//strong[normalize-space()=\"%s\"]";
+        String[] headers = {"Offers", "Orders", "Favourites"};
+        for (String header : headers) {
+            String xpath = String.format(xpathTemplate, header);
+            try {
+                if (!driver.findElement(By.xpath(xpath)).isDisplayed()) {
+                    return false;
+                }
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public DemoPage clickOnVersionDropdownOnClickedLinks(String productName) {
@@ -46,6 +71,19 @@ public class DemoPage extends BasePage {
         String xpath = "//span[normalize-space()=\"" + count + " Product(s) found.\"]";
         return !driver.findElements(By.xpath(xpath)).isEmpty();
     }
+
+    public DemoPage addItemToFavourites(String productName) {
+        String xpath = "//p[normalize-space()=\"" + productName + "\"]/ancestor::div[contains(@class,'shelf-item')]//button[contains(@class, 'MuiButtonBase-root') and contains(@class, 'Button')]";
+        PageCommonUtils.getInstance(driver).click(xpath, LocatorEnum.XPATH.value(), productName + " add to favourites button", PAGE_NAME);
+        return this;
+    }
+
+    public boolean isFavouriteHeartYellow(String productName) {
+        String xpath = "//p[normalize-space()=\"" + productName + "\"]/ancestor::div[contains(@class,'shelf-item')]//button[contains(@class, 'MuiButtonBase-root') and contains(@class, 'MuiIconButton-root') and contains(@class, 'Button') and contains(@class, 'clicked')]";
+        return !driver.findElements(By.xpath(xpath)).isEmpty();
+    }
+
+
 
 
 }
