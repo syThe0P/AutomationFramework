@@ -33,6 +33,4 @@ public class CheckOutSideModal extends BasePage {
         return this;
     }
 
-
-
 }
