@@ -29,7 +29,5 @@ public class EndToEndFlowTest extends BaseTest {
         CheckOutSideModal checkOutSideModal = new CheckOutSideModal(getDriver());
         checkOutSideModal.clickOnCheckoutBag();
         checkOutSideModal.clickOnCheckOutButton();
-        WaitUtilities.getInstance(getDriver()).applyStaticWait(2);
-
     }
 }
