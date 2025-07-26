@@ -9,8 +9,6 @@ import org.pom.base.BasePage;
 import org.pom.base.BaseTest;
 import org.pom.enums.LocatorEnum;
 import org.pom.utils.seleniumutils.PageCommonUtils;
-import org.pom.utils.seleniumutils.ValidationCommonUtils;
-import org.pom.utils.seleniumutils.WaitUtilities;
 
 public class DemoPage extends BasePage {
 
